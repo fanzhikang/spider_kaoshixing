@@ -3,6 +3,7 @@ __author__ = 'fanzhikang'
 __date__ = '2018/10/18 23:13'
 
 import requests
+import json
 
 
 login_data = {
@@ -30,18 +31,20 @@ content = session.post('https://admin.kaoshixing.com/admin/showtestqm_grid/', he
 content = content.content.decode(encoding='utf-8')
 content_dict = json.loads(content)
 for li in content_dict['bizContent']['rows']:
-    if li['type'] == '问答':
+    if li['type'] == '填空':
         classification = li['classification'].split('/')[-1]
         id = li['id']
         print('https://admin.kaoshixing.com/admin/load_data?&id=' + id)
+
     else:
         print('no')
 
-data_url = "https://admin.kaoshixing.com/admin/load_data?&id=5b7a68c636098f6ee33300a3&_=1539844555319"
+data_url = "https://admin.kaoshixing.com/admin/load_data?&id=5acdfafbe630b911c6b6a516"
 data_content = session.get(data_url)
 data_content = data_content.content.decode(encoding='utf-8')
 
 
 data_dict = json.loads(data_content)
-answer = data_dict['bizContent']['answer1']
-print(answer)
+answer = data_dict['bizContent'].get('answer1', '')
+answer1 = data_dict['bizContent'].get('answer2', '')
+print(answer, answer1)

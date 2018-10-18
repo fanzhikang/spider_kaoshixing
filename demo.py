@@ -95,12 +95,10 @@ class Crawl:
         data_content = self.session.get(url)
         data_content = data_content.content.decode(encoding='utf-8')
         data_dict = json.loads(data_content)
-        answers.append(data_dict['bizContent']['answer1'])
-        if data_dict['bizContent']['answer2']:
-
-            answers.append(data_dict['bizContent']['answer2'])
-        answers.append(data_dict['bizContent']['answer3'])
-        answers.append(data_dict['bizContent']['answer4'])
+        answers.append(data_dict['bizContent'].get('answer1', ''))
+        answers.append(data_dict['bizContent'].get('answer2', ''))
+        answers.append(data_dict['bizContent'].get('answer3', ''))
+        answers.append(data_dict['bizContent'].get('answer4', ''))
         return answers
 
 
@@ -136,7 +134,7 @@ class Crawl:
             sheet2.write(i, 6, li['dif'])
             i += 1
 
-        workbook.save('1.xls')
+        workbook.save('demo.xls')
 
 
 
