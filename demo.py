@@ -80,7 +80,23 @@ class Crawl:
                 dict['dif'] = dif
                 self.list2.append(dict)
             elif li['type'] == '判断':
+                dict = {}
+                question = li['content']
+                dif = li['difficult']
+                classification = li['classification'].split('/')[-1]
+                id = li['id']
+                url = self.detail_url + id
+                answer = self.parse_3(url)
+                dict['question'] = question
+                dict['answer'] = answer
+                dict['classification'] = classification
+                dict['dif'] = dif
+                self.list3.append(dict)
+            elif li['type'] == '多选':
                 pass
+            elif li['type'] == '单选':
+                pass
+
 
 
     def parse_1(self,url):
@@ -101,16 +117,28 @@ class Crawl:
         answers.append(data_dict['bizContent'].get('answer4', ''))
         return answers
 
+    def parse_3(self,url):
+        data_content = self.session.get(url)
+        data_content = data_content.content.decode(encoding='utf-8')
+        data_dict = json.loads(data_content)
+        if data_dict['bizContent'].get('key1','') == '1':
+            answer = '正确'
+        else:
+            answer = '错误'
+        return answer
 
 
     def save_sheet(self):
         workbook = xlwt.Workbook(encoding='utf-8')
         sheet1 = workbook.add_sheet('问答')
         sheet2 = workbook.add_sheet('填空')
+        sheet3 = workbook.add_sheet('判断')
         head1 = ['题干', '答案', '分类', '难度']
+        head2 = ['题干', '答案1', '答案2', '答案3', '答案4', '分类', '难度']
+        head3 = ['题干', '答案', '分类', '难度']
+
         for h in range(len(head1)):
             sheet1.write(0, h, head1[h])
-
         i = 1
         for li in demo.list1:
             sheet1.write(i, 0, li['question'])
@@ -119,10 +147,8 @@ class Crawl:
             sheet1.write(i, 3, li['dif'])
             i += 1
 
-        head2 = ['题干', '答案1', '答案2', '答案3', '答案4', '分类', '难度']
         for h in range(len(head2)):
             sheet2.write(0, h, head2[h])
-
         i = 1
         for li in demo.list2:
             sheet2.write(i, 0, li['question'])
@@ -134,6 +160,15 @@ class Crawl:
             sheet2.write(i, 6, li['dif'])
             i += 1
 
+        for h in range(len(head3)):
+            sheet3.write(0, h, head3[h])
+        i = 1
+        for li in demo.list3:
+            sheet3.write(i, 0, li['question'])
+            sheet3.write(i, 1, li['answer'])
+            sheet3.write(i, 2, li['classification'])
+            sheet3.write(i, 3, li['dif'])
+            i += 1
         workbook.save('demo.xls')
 
 

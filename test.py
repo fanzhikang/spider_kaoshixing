@@ -39,12 +39,12 @@ for li in content_dict['bizContent']['rows']:
     else:
         print('no')
 
-data_url = "https://admin.kaoshixing.com/admin/load_data?&id=5acdfafbe630b911c6b6a516"
+data_url = "https://admin.kaoshixing.com/admin/load_data?&id=5b7a68c636098f6ee33300a0"
 data_content = session.get(data_url)
 data_content = data_content.content.decode(encoding='utf-8')
 
 
 data_dict = json.loads(data_content)
-answer = data_dict['bizContent'].get('answer1', '')
-answer1 = data_dict['bizContent'].get('answer2', '')
-print(answer, answer1)
+if data_dict['bizContent'].get('key1', '') == '1':
+    print("正确")
+
